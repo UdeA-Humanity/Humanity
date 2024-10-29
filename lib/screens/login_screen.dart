@@ -30,9 +30,10 @@ class LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Imagen del logo
-              Image.asset(
-                'assets/images/logo.png',
-                height: 150, // Ajusta el tamaño según sea necesario
+              const Image(
+                image: AssetImage('assets/images/logo.png'),
+                width: 150,
+                height: 150,
               ),
               const SizedBox(height: 30), // Espacio entre el logo y el formulario
               TextFormField(

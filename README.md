@@ -3,7 +3,7 @@
 Nuestra aplicación, Humanity, es una aplicación móvil que conecta usuarios con proveedores de servicios en el Área metropolitana del Valle de Aburrá, permitiendo buscar, comparar y contratar profesionales de manera rápida y segura.
 
 <p align="center">
-  <img src="Content/Logo.png" alt="Logo" width="200"/>
+  <img src="Content/logo.png" alt="Logo" width="200"/>
 </p>
 
 ## Herramientas:
