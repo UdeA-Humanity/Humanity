@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:humanity/screens/signin_screen.dart';
+import 'package:humanity/services/select_image.dart';
+import 'package:humanity/services/upload_image.dart';
 
 class ProfileScreen extends StatefulWidget {
 
@@ -12,6 +16,8 @@ class ProfileScreen extends StatefulWidget {
 
 class ProfileScreenState extends State<ProfileScreen> {
   User? _currentUser;
+
+  File? image_to_upload;
 
   @override
   void initState() {
@@ -42,7 +48,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile"),
+        title: const Text("Profile"),
       ),
       body: Center(
         child: Column(
@@ -67,6 +73,54 @@ class ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 20),
             ],
+
+            if (image_to_upload != null) 
+              Image.file(
+              image_to_upload!,
+              height: 300,
+              width: 400,
+              fit: BoxFit.cover,
+              )
+            else 
+              Container(
+                margin: const EdgeInsets.all(10),
+                height: 300,
+                width: 400,
+                color: Colors.grey,
+                child: const Center(child: Text("No image selected")),
+              ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton(onPressed: () async{
+
+              final imagen = await selectImage();
+
+              setState(() {
+                image_to_upload = File(imagen!.path);
+              });
+            }, child: const Text("Select image")),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton(onPressed: () async{
+
+              if (image_to_upload == null) {
+                return;
+              }
+
+              final uploaded = await uploadImage(image_to_upload!);
+
+              if (uploaded){
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Imagen subida correctamente")));
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Error al subir la imagen")));
+              }
+
+            }, child: const Text("Upload profile picture")),
+
+            const SizedBox(height: 20),
+
             ElevatedButton(
               onPressed: _logout,
               child: const Text('Logout'),
