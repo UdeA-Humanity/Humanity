@@ -31,7 +31,7 @@ class LoginScreenState extends State<LoginScreen> {
             children: [
               // Imagen del logo
               Image.asset(
-                'assets/images/logo.png',
+                'assets/images/Logo_inv.png',
                 height: 150, // Ajusta el tamaño según sea necesario
               ),
               const SizedBox(height: 30), // Espacio entre el logo y el formulario

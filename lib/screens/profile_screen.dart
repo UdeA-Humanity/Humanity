@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'login_screen.dart';
+import 'package:humanity/screens/signin_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
 
@@ -33,7 +33,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     // Navigate to LoginScreen and remove all previous routes
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
+      MaterialPageRoute(builder: (context) => const SignInScreen()),
       (route) => false,
     );
   }

@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
-import 'login_screen.dart';
+import 'package:humanity/screens/signin_screen.dart';
+import 'package:humanity/screens/home_screen.dart';
+import 'package:humanity/utils/color_utils.dart';
 
 class SplashScreen extends StatefulWidget {
 
@@ -39,13 +40,13 @@ class SplashScreenState extends State<SplashScreen> {
         // User is logged in, navigate to HomeScreen
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
       } else {
         // User is not logged in, navigate to LoginScreen
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
+          MaterialPageRoute(builder: (context) => const SignInScreen()),
         );
       }
     } catch (e) {
@@ -68,14 +69,22 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
+      body: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [
+                hexStringToColor("00ff2e"),
+                hexStringToColor("00ff8b"),
+                hexStringToColor("03f7ff")],
+              begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+          child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Display the app's logo
             Image.asset(
-              'assets/images/logo.png',
-              height: 150, // Adjust the size as needed
+              'assets/images/Logo_inv.png',
+              height: 350, // Adjust the size as needed
             ),
             const SizedBox(height: 20),
             const CircularProgressIndicator(),
