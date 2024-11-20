@@ -26,7 +26,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       'price': '\$70.000/hora',
       'rating': 4.87,
       'reviews': 71,
-      'imageUrl': 'assets/chef.jpg',
+      'imageUrl': 'assets/images/logo.png',
     },
     {
       'name': 'Juan - Mecánico Automotriz',
@@ -35,7 +35,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       'price': '\$50.000 - Revisión inicial',
       'rating': 5.0,
       'reviews': 3,
-      'imageUrl': 'assets/mechanic.jpg',
+      'imageUrl': 'assets/images/logo.png',
     },
   ];
 
