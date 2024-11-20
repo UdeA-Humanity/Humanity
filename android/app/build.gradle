@@ -17,6 +17,13 @@ plugins {
 
     // Add the dependency for the Performance Monitoring Gradle plugin
     id("com.google.firebase.firebase-perf") version "1.4.2" apply false
+
+    // Import the BoM for the Firebase platform
+    // id ("com.google.firebase.firebase-bom") version "33.6.0" apply false
+
+    // Declare the dependency for the Cloud Firestore library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    // id "com.google.firebase.firebase-firestore"
 }
 
 dependencies {
@@ -26,6 +33,8 @@ dependencies {
     // Add the dependency for the Performance Monitoring library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-perf")
+
+    implementation('com.google.firebase:firebase-appcheck-safetynet:16.0.0')
 }
 
 android {
