@@ -36,7 +36,15 @@ class HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text("Home"),
       ),
-      body: _pages[_selectedIndex],
+      body: Stack(
+      children: [
+        _pages[_selectedIndex],
+        TextButton(
+          onPressed: () => throw Exception(),
+          child: const Text("Throw Test Exception"),
+        ),
+      ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(

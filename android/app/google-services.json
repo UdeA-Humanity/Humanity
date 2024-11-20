@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "599615163113",
     "project_id": "humanity-feeb1",
-    "storage_bucket": "humanity-feeb1.appspot.com"
+    "storage_bucket": "humanity-feeb1.firebasestorage.app"
   },
   "client": [
     {
