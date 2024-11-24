@@ -1,87 +1,257 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:humanity/services/select_image.dart';
-import 'package:humanity/services/upload_image.dart';
 
-class DescubreScreen extends StatefulWidget {
-
-  const DescubreScreen({super.key});
+class DiscoverScreen extends StatefulWidget {
+  const DiscoverScreen({super.key});
 
   @override
-
-  DescubreScreenState createState() => DescubreScreenState();
-
+  State<DiscoverScreen> createState() => _DiscoverScreenState();
 }
 
-class DescubreScreenState extends State<DescubreScreen> {
+class _DiscoverScreenState extends State<DiscoverScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  int _selectedCategoryIndex = 0;
 
-  File? image_to_upload;
+  final List<Map<String, dynamic>> _categories = [
+    {'icon': Icons.new_releases, 'label': 'Novedades'},
+    {'icon': Icons.car_repair, 'label': 'Mecánica'},
+    {'icon': Icons.security, 'label': 'Seguridad'},
+    {'icon': Icons.restaurant, 'label': 'Comida'},
+  ];
+
+  final List<Map<String, dynamic>> _serviceProviders = [
+    {
+      'name': 'Anselma - Chef profesional',
+      'category': 'Cocina mediterránea',
+      'status': 'Disponible',
+      'price': '\$70.000/hora',
+      'rating': 4.87,
+      'reviews': 71,
+      'imageUrl': 'assets/images/logo.png',
+    },
+    {
+      'name': 'Juan - Mecánico Automotriz',
+      'category': 'Reparación',
+      'specialties': ['Prevención', 'Diagnóstico'],
+      'price': '\$50.000 - Revisión inicial',
+      'rating': 5.0,
+      'reviews': 3,
+      'imageUrl': 'assets/images/logo.png',
+    },
+  ];
 
   @override
-
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Discover"),
-      ),
-      body: Center(
+      body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => throw Exception(),
-              child: const Text("Throw Test Exception"),
+            _buildSearchBar(),
+            _buildCategories(),
+            Expanded(
+              child: _buildServiceList(),
             ),
-            const SizedBox(height: 20),
-            
-            if (image_to_upload != null) 
-              Image.file(
-              image_to_upload!,
-              height: 300,
-              width: 400,
-              fit: BoxFit.cover,
-              )
-            else 
-              Container(
-                margin: const EdgeInsets.all(10),
-                height: 300,
-                width: 400,
-                color: Colors.grey,
-                child: const Center(child: Text("No image selected")),
-              ),
-
-            const SizedBox(height: 20),
-
-            ElevatedButton(onPressed: () async{
-
-              final imagen = await selectImage();
-
-              setState(() {
-                image_to_upload = File(imagen!.path);
-              });
-            }, child: const Text("Select image")),
-
-            const SizedBox(height: 20),
-
-            ElevatedButton(onPressed: () async{
-
-              if (image_to_upload == null) {
-                return;
-              }
-
-              final uploaded = await uploadImage(image_to_upload!);
-
-              if (uploaded){
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Imagen subida correctamente")));
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Error al subir la imagen")));
-              }
-
-            }, child: const Text("Subir a Firebase")),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildSearchBar() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.search, color: Colors.black),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: const InputDecoration(
+                        hintText: 'Busca tu servidor',
+                        border: InputBorder.none,
+                        hintStyle: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: const Icon(Icons.swap_horiz, color: Colors.black),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategories() {
+    return SizedBox(
+      height: 90,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _categories.length,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () => setState(() => _selectedCategoryIndex = index),
+            child: Container(
+              width: 80,
+              margin: const EdgeInsets.only(right: 12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    _categories[index]['icon'],
+                    color: _selectedCategoryIndex == index
+                        ? Colors.green
+                        : Colors.black,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    _categories[index]['label'],
+                    style: TextStyle(
+                      color: _selectedCategoryIndex == index
+                          ? Colors.green
+                          : Colors.black,
+                      fontSize: 12,
+                    ),
+                  ),
+                  if (_selectedCategoryIndex == index)
+                    Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      height: 2,
+                      width: 40,
+                      color: Colors.green,
+                    ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildServiceList() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: _serviceProviders.length,
+      itemBuilder: (context, index) {
+        final provider = _serviceProviders[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(12),
+                    ),
+                    child: Image.asset(
+                      provider['imageUrl'],
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.favorite_border,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          provider['name'],
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            const Icon(Icons.star, color: Colors.amber, size: 20),
+                            Text(
+                              ' ${provider['rating']} (${provider['reviews']})',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      provider['category'],
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                    if (provider['specialties'] != null) ...[
+                      const SizedBox(height: 4),
+                      ...provider['specialties'].map<Widget>((specialty) {
+                        return Text(
+                          specialty,
+                          style: const TextStyle(color: Colors.black),
+                        );
+                      }).toList(),
+                    ],
+                    const SizedBox(height: 8),
+                    Text(
+                      provider['price'],
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 }
