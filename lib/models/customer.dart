@@ -28,7 +28,7 @@ class Customer {
         _surname = json['surname'],
         _email = json['email'],
         _password = json['password'],
-        _birthday = json['birthday'],
+        _birthday = json['bornDate'],
         _profilePic = json['profilePic'];
 
   get name => _name;

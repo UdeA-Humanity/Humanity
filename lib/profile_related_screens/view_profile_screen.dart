@@ -1,5 +1,11 @@
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:humanity/utils/color_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:humanity/services/select_image.dart';
+import 'package:humanity/services/upload_image.dart';
+import '../models/customer.dart';
 
 class ViewProfileScreen extends StatefulWidget {
   const ViewProfileScreen({super.key});
@@ -9,6 +15,77 @@ class ViewProfileScreen extends StatefulWidget {
 }
 
 class ViewProfileScreenState extends State<ViewProfileScreen> {
+  User? _currentUser;
+  File? image_to_upload;
+  bool showService = false;
+  Customer? customerData;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+    _loadCustomerData();  // Añadimos esta función
+  }
+
+  void _loadUser() {
+    setState(() {
+      _currentUser = FirebaseAuth.instance.currentUser;
+    });
+  }
+
+  Future<void> _loadCustomerData() async {
+    if (_currentUser != null) {
+      try {
+        // Obtener datos del usuario desde Firestore
+        final userDoc = await FirebaseFirestore.instance
+            .collection('customers')
+            .doc(_currentUser!.uid)
+            .get();
+
+        if (userDoc.exists) {
+          setState(() {
+            // Crear instancia de Customer con los datos de Firestore
+            customerData = Customer.fromJson(userDoc.data()!);
+          });
+        }
+      } catch (e) {
+        print('Error loading user data: $e');
+      }
+    }
+  }
+
+  Future<void> _updateProfilePic() async {
+    if (image_to_upload != null && customerData != null) {
+      try {
+        final uploaded = await uploadImage(image_to_upload!);
+
+        if (uploaded) {
+          // Actualizar la URL de la imagen en el modelo Customer
+          customerData!.profilePic = image_to_upload!.path;
+
+          // Actualizar en Firestore
+          await FirebaseFirestore.instance
+              .collection('customers')
+              .doc(customerData!.uid)
+              .update({'profilePic': customerData!.profilePic});
+
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Imagen subida correctamente"))
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Error al subir la imagen"))
+          );
+        }
+      } catch (e) {
+        print('Error updating profile pic: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Error al actualizar la imagen de perfil"))
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,23 +111,54 @@ class ViewProfileScreenState extends State<ViewProfileScreen> {
             Center(
               child: Stack(
                 children: [
-                  const CircleAvatar(
-                    radius: 60,
+                  CircleAvatar(
+                    radius: 80,
                     backgroundColor: Colors.grey,
-                    child: Icon(Icons.person, size: 80, color: Colors.white),
+                    child: image_to_upload != null
+                        ? ClipOval(
+                      child: Image.file(
+                        image_to_upload!,
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                        : customerData?.profilePic != null && customerData!.profilePic.isNotEmpty
+                        ? ClipOval(
+                      child: Image.network(
+                        customerData!.profilePic,
+                        width: 160,
+                        height: 160,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                        : const Icon(Icons.person, size: 40, color: Colors.white),
                   ),
                   Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.green,
-                      radius: 18,
-                      child: IconButton(
-                        icon: const Icon(Icons.edit, size: 18, color: Colors.white),
-                        onPressed: () {
-                          // Implement image picker
-                        },
+                    bottom: -10,
+                    right: -10,
+                    child: IconButton(
+                      icon: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: hexStringToColor("00ff2e"),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.add_a_photo,
+                          size: 20,
+                          color: Colors.white,
+                        ),
                       ),
+                      onPressed: () async {
+                        final imagen = await selectImage();
+                        if (imagen != null) {
+                          setState(() {
+                            image_to_upload = File(imagen.path);
+                          });
+                          await _updateProfilePic();
+                        }
+                      },
                     ),
                   ),
                 ],
@@ -64,9 +172,9 @@ class ViewProfileScreenState extends State<ViewProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildInfoSection('Información Personal', [
-                    _buildInfoItem('Nombre', 'Juan Pérez'),
-                    _buildInfoItem('Correo', 'juan@example.com'),
-                    _buildInfoItem('Teléfono', '+34 123 456 789'),
+                    _buildInfoItem('Nombre', "${customerData!.name} ${customerData!.surname}"),
+                    _buildInfoItem('Correo', '${customerData!.email}'),
+                    _buildInfoItem('Identificación', '${customerData!.idnumber}'),
                   ]),
                   const SizedBox(height: 20),
                   _buildInfoSection('Historial de Servicios', [
@@ -115,7 +223,7 @@ class ViewProfileScreenState extends State<ViewProfileScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(color: Colors.grey)),
+          Text(label, style: const TextStyle(color: Colors.green,fontWeight: FontWeight.bold,)),
           Text(value, style: const TextStyle(fontWeight: FontWeight.w500)),
         ],
       ),

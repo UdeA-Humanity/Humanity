@@ -11,6 +11,7 @@ import 'package:humanity/screens/splash_screen.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
+    name: 'humanity',
     options: DefaultFirebaseOptions.currentPlatform,
   );
   // Pass all uncaught "fatal" errors from the framework to Crashlytics
