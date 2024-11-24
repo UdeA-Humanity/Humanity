@@ -1,7 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
+
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:humanity/reusable_widgets/reusable_widget.dart';
 import 'package:humanity/screens/home_screen.dart';
+import 'package:humanity/services/upload_image.dart';
 import 'package:humanity/utils/color_utils.dart';
+import 'package:humanity/services/select_image.dart';
+import 'package:humanity/repository/firebase_api.dart';
+import 'package:humanity/models/customer.dart';
 import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -18,6 +25,9 @@ class SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailTextController = TextEditingController();
   final TextEditingController _nameTextController = TextEditingController();
   final TextEditingController _birthdayTextController = TextEditingController();
+  File? imageToUpload;
+
+  final FirebaseApi _firebaseApi = FirebaseApi();
 
   bool _isPasswordVisible = false;
 
@@ -31,12 +41,13 @@ class SignUpScreenState extends State<SignUpScreen> {
 
     if (pickedDate != null) {
       setState(() {
-        _birthdayTextController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+        _birthdayTextController.text =
+            "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
       });
     }
   }
 
-  bool _validateInputs() {
+  bool validateInputs() {
     if (_nameTextController.text.isEmpty ||
         _surnameTextController.text.isEmpty ||
         _idNumberTextController.text.isEmpty ||
@@ -65,6 +76,142 @@ class SignUpScreenState extends State<SignUpScreen> {
 
     return true;
   }
+
+  void _showMessage(String msg) async {
+    setState(() {
+      SnackBar snackBar = SnackBar(content: Text(msg));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    });
+  }
+
+  void _createCustomerDB(Customer customer) async {
+    var result = await _firebaseApi.createCustomerDB(customer);
+    print('create customer db');
+
+    if (result == 'network-request-failed') {
+      _showMessage('Revise su conexión a internet');
+    } else {
+      _showMessage('Usuario creado con éxito');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    }
+  }
+
+  void _registerCustomer(Customer customer) async{
+
+    var result = await _firebaseApi.registerCustomer(customer.email, customer.password);
+
+    if (result == 'invalid-email') {
+      _showMessage('El correo electrónico está mal escrito');
+    } else if (result == 'email-already-in-use') {
+      _showMessage('Ya existe una cuenta con ese correo electrónico');
+    } else if (result == 'weak-password') {
+      _showMessage('La contraseña debe tener mínimo 6 dígitos');
+    } else if (result == 'network-request-failed') {
+      _showMessage('Revise su conexión a internet');
+    } else {
+      customer.uid = result!;
+      print(customer.uid);
+      _createCustomerDB(customer);
+    }
+  }
+
+  void _onRegisterButtonClicked() async {
+
+    String? imageUrl;
+        if (imageToUpload != null) {
+          // Upload image and retrieve URL
+          final String uploadedImageUrl = await uploadImageAndGetUrl(imageToUpload!);
+          if (uploadedImageUrl.isNotEmpty) {
+            imageUrl = uploadedImageUrl;
+            print(imageUrl);
+          }
+        }
+
+    if (_emailTextController.text.isEmpty || _passwordTextController.text.isEmpty) {
+      _showMessage("ERROR: Debe digitar correo electrónico y contraseña");
+    // } else if (_password.text != _repPassword.text) {
+    //   _showMessage("ERROR: Las contraseñas deben de ser iguales");
+    } else {
+      var customer = Customer(
+          "",
+          _idNumberTextController.text,
+          _nameTextController.text,
+          _surnameTextController.text,
+          _emailTextController.text,
+          _passwordTextController.text,
+          _birthdayTextController.text,
+          imageUrl ?? '');
+      _registerCustomer(customer);
+
+      /* code */
+    }
+  }
+
+  // Future<void> _registerUser() async {
+  //   if (_validateInputs()) {
+  //     try {
+  //       UserCredential userCredential = await FirebaseAuth.instance
+  //           .createUserWithEmailAndPassword(
+  //         email: _emailTextController.text,
+  //         password: _passwordTextController.text,
+  //       );
+
+  //       String? imageUrl;
+  //       if (imageToUpload != null) {
+  //         // Upload image and retrieve URL
+  //         final String uploadedImageUrl = await uploadImageAndGetUrl(imageToUpload!);
+  //         if (uploadedImageUrl.isNotEmpty) {
+  //           imageUrl = uploadedImageUrl;
+  //         }
+  //       }
+
+  //       // FirebaseFirestore db = FirebaseFirestore.instance;
+
+  //       // final user = <String, dynamic>{
+  //       //   'name': _nameTextController.text,
+  //       //   'surname': _surnameTextController.text,
+  //       //   'idNumber': _idNumberTextController.text,
+  //       //   'email': _emailTextController.text,
+  //       //   'birthday': _birthdayTextController.text,
+  //       //   'profilePicture': imageUrl ?? '',
+  //       // };
+
+  //       // db.collection("users").add(user).then((DocumentReference document) {
+  //       //   print("DocumentSnapshot added with ID: ${document.id}");
+  //       // });
+
+  //       // Add user data to Firestore
+  //       await FirebaseFirestore.instance
+  //           .collection('customers')
+  //           .doc(userCredential.user?.uid)
+  //           .set({
+  //         'name': _nameTextController.text,
+  //         'surname': _surnameTextController.text,
+  //         'idNumber': _idNumberTextController.text,
+  //         'email': _emailTextController.text,
+  //         'birthday': _birthdayTextController.text,
+  //         'profilePicture': imageUrl ?? '',
+  //       });
+
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text("Registration successful")),
+  //       );
+
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => HomeScreen()),
+  //       );
+  //     } catch (e) {
+  //       print("Error: $e");
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text("Error: $e")),
+  //       );
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -172,27 +319,19 @@ class SignUpScreenState extends State<SignUpScreen> {
                   onTap: () => _selectBirthdate(context),
                 ),
                 const SizedBox(height: 20),
-                firebaseUIButton(context, "Registrarse", () {
-                  if (_validateInputs()) {
-                    FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text,
-                        )
-                        .then((value) {
-                      print("Created New Account");
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
-                      );
-                    }).onError((error, stackTrace) {
-                      print("Error ${error.toString()}");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Error: ${error.toString()}")),
-                      );
-                    });
-                  }
-                }),
+                ElevatedButton(
+                  onPressed: () async {
+                    final image = await selectImage();
+                    if (image != null) {
+                      setState(() {
+                        imageToUpload = File(image.path);
+                      });
+                    }
+                  },
+                  child: const Text("Select Image"),
+                ),
+                const SizedBox(height: 20),
+                firebaseUIButton(context, "Registrarse", _onRegisterButtonClicked),
               ],
             ),
           ),

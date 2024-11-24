@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'discover_screen.dart';
 import 'saved_screen.dart';
@@ -15,6 +17,8 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+
+  File? image_to_upload;
 
   static const List<Widget> _pages = <Widget>[
     DescubreScreen(),
@@ -34,17 +38,9 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Home"),
+        title: const Text("Humanity"),
       ),
-      body: Stack(
-      children: [
-        _pages[_selectedIndex],
-        TextButton(
-          onPressed: () => throw Exception(),
-          child: const Text("Throw Test Exception"),
-        ),
-      ],
-      ),
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(
