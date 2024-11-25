@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "599615163113",
+    "project_id": "humanity-feeb1",
+    "storage_bucket": "humanity-feeb1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599615163113:android:c29f615b5a8dcd02a83e78",
+        "android_client_info": {
+          "package_name": "com.CamiloAlvarezCamiloArteaga.humanity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMWRXAn3y-fCEU4eTtj_YyOAZm3q5ieAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

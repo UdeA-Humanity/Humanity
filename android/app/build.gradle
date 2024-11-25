@@ -1,8 +1,40 @@
 plugins {
     id "com.android.application"
+    // START: FlutterFire Configuration
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    // END: FlutterFire Configuration
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
+
+    // // To benefit from the latest Performance Monitoring plugin features,
+    // // update your Android Gradle plugin dependency to at least v3.4.0
+    // id("com.android.application") version "7.3.0" apply false
+
+    // // Make sure that you have the Google services Gradle plugin dependency
+    // id("com.google.gms.google-services") version "4.4.2" apply false
+
+    // Add the dependency for the Performance Monitoring Gradle plugin
+    id("com.google.firebase.firebase-perf") version "1.4.2" apply false
+
+    // Import the BoM for the Firebase platform
+    // id ("com.google.firebase.firebase-bom") version "33.6.0" apply false
+
+    // Declare the dependency for the Cloud Firestore library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    // id "com.google.firebase.firebase-firestore"
+}
+
+dependencies {
+    // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
+
+    // Add the dependency for the Performance Monitoring library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-perf")
+
+    implementation('com.google.firebase:firebase-appcheck-safetynet:16.0.0')
 }
 
 android {
@@ -24,7 +56,7 @@ android {
         applicationId = "com.CamiloAlvarezCamiloArteaga.humanity"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
