@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:humanity/utils/color_utils.dart';
 
 // Message model
 class Message {
@@ -39,7 +40,7 @@ class _MensajesScreenState extends State<MensajesScreen>
       message: 'Novedades: Revisa nuestras nuevas act...',
       status: '',
       date: '',
-      avatarUrl: 'assets/humanity_logo.png',
+      avatarUrl: 'assets/images/logo.png',
     ),
     Message(
       id: '2',
@@ -48,16 +49,16 @@ class _MensajesScreenState extends State<MensajesScreen>
       message: 'Humanity actualización: Reserva canc...',
       status: 'Cancelado',
       date: 'Agosto 6, 2024',
-      avatarUrl: 'assets/sofia_avatar.png',
+      avatarUrl: 'assets/images/masajista.png',
     ),
     Message(
       id: '3',
-      senderName: 'Juan',
+      senderName: 'Mateo',
       senderRole: 'Mecánico',
       message: 'Cambio de aceite programado',
       status: 'Servicio agendado',
       date: '',
-      avatarUrl: 'assets/juan_avatar.png',
+      avatarUrl: 'assets/images/mecanico.png',
     ),
   ];
 
@@ -98,9 +99,14 @@ class _MensajesScreenState extends State<MensajesScreen>
 
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        color: Color(0xFF2ECC71),
+      width: double.infinity,
+      padding: const EdgeInsets.all(30),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: [
+          hexStringToColor("00ff2e"),
+          hexStringToColor("00ff8b"),
+          hexStringToColor("03f7ff")]
+        ),
       ),
       child: const Text(
         'Buzón de Mensajes',

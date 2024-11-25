@@ -13,13 +13,13 @@ class _ReservasScreenState extends State<ReservasScreen> {
     {
       'status': 'Pendiente',
       'serviceTitle': 'Revisión del auto',
-      'serviceDescription': 'Cambio de aceite por Juan',
+      'serviceDescription': 'Cambio de aceite por Mateo',
       'date': 'Oct',
       'day': '14',
       'year': '2024',
       'location': 'Medellín, Antioquia',
       'country': 'Colombia',
-      'imageUrl': 'assets/images/logo.png',
+      'imageUrl': 'assets/images/mecanico.png',
     }
   ];
 
@@ -27,12 +27,12 @@ class _ReservasScreenState extends State<ReservasScreen> {
     {
       'name': 'Carlos - Electricista',
       'services': '18 servicios',
-      'imageUrl': 'assets/images/logo.png',
+      'imageUrl': 'assets/images/electricista.png',
     },
     {
       'name': 'Miguel - Plomero',
       'services': '24 servicios',
-      'imageUrl': 'assets/images/logo.png',
+      'imageUrl': 'assets/images/plomero.png',
     },
   ];
 
@@ -58,14 +58,13 @@ class _ReservasScreenState extends State<ReservasScreen> {
 
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.all(25),
+      width: double.infinity,
+      padding: const EdgeInsets.all(30),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            hexStringToColor("00ff2e"),
-            hexStringToColor("00ff8b"),
-            hexStringToColor("03f7ff")
-          ],
+        gradient: LinearGradient(colors: [
+          hexStringToColor("00ff2e"),
+          hexStringToColor("00ff8b"),
+          hexStringToColor("03f7ff")]
         ),
       ),
       child: const Text(

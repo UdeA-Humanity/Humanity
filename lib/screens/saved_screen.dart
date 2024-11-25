@@ -13,16 +13,11 @@ class GuardadoScreen extends StatelessWidget {
           'rating': 4.98,
           'reviews': 1061,
           'price': '\$100.000/hora',
-          'imageUrl': 'assets/images/logo.png',
-          'isSuperHost': true,
+          'imageUrl': 'assets/images/profe.png',
+          'isSuperHost': false,
           'lastSeen': '15/07/2024',
         },
       ],
-    },
-    {
-      'name': 'Posibilidad',
-      'imageUrl': 'assets/images/logo.png',
-      'providers': [],
     },
   ];
 
@@ -210,17 +205,18 @@ class SavedListDetailScreen extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Row(
-                            children: [
-                              const Icon(Icons.star, color: Colors.amber, size: 20),
-                              Text(
-                                ' ${provider['rating']} (${provider['reviews']})',
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber, size: 20),
+                          Text(
+                            ' ${provider['rating']} (${provider['reviews']})',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black,
+                            ),
                           ),
                         ],
                       ),

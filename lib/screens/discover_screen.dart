@@ -20,22 +20,22 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   final List<Map<String, dynamic>> _serviceProviders = [
     {
-      'name': 'Anselma - Chef profesional',
+      'name': 'Juan - Chef profesional',
       'category': 'Cocina mediterránea',
       'status': 'Disponible',
       'price': '\$70.000/hora',
       'rating': 4.87,
       'reviews': 71,
-      'imageUrl': 'assets/images/logo.png',
+      'imageUrl': 'assets/images/chef.png',
     },
     {
-      'name': 'Juan - Mecánico Automotriz',
+      'name': 'Mateo - Mecánico Automotriz',
       'category': 'Reparación',
       'specialties': ['Prevención', 'Diagnóstico'],
       'price': '\$50.000 - Revisión inicial',
       'rating': 5.0,
       'reviews': 3,
-      'imageUrl': 'assets/images/logo.png',
+      'imageUrl': 'assets/images/mecanico.png',
     },
   ];
 

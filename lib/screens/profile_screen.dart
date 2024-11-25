@@ -9,7 +9,6 @@ import 'signin_screen.dart';
 import 'package:humanity/profile_related_screens/my_service_screen.dart';
 import 'package:humanity/profile_related_screens/notifications_screen.dart';
 import 'package:humanity/profile_related_screens/payment_methods_screen.dart';
-import 'package:humanity/profile_related_screens/personal_info_screen.dart';
 import 'package:humanity/profile_related_screens/privacy_policy_screen.dart';
 import 'package:humanity/profile_related_screens/provider_info_screen.dart';
 import 'package:humanity/profile_related_screens/view_profile_screen.dart';
@@ -295,12 +294,12 @@ class ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 15),
                     _buildMenuItem(
                       icon: Icons.person_outline,
-                      title: 'Información personal',
+                      title: 'Mi servicio',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const PersonalInfoScreen(),
+                            builder: (context) => const MyServiceScreen(),
                           ),
                         );
                       },

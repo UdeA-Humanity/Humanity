@@ -77,7 +77,7 @@ class MyServiceScreenState extends State<MyServiceScreen> {
 
             // Current Services
             const Text(
-              'Servicios Actuales',
+              'Servicios Completados',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -86,8 +86,8 @@ class MyServiceScreenState extends State<MyServiceScreen> {
             const SizedBox(height: 12),
             _buildServiceCard(
               'Mecánica Automotriz',
-              'Especialista en sistemas eléctricos',
-              '€50/hora',
+              'Arreglo de llantas y motor',
+              '500000 COP',
               4.8,
             ),
 
